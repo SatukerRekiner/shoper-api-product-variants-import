@@ -186,51 +186,10 @@ pip install requests pandas
 
 ---
 
-### Miejsce na screenshoty
 
+## efekt końcowy w panelu Shopera
 
-#### efekt końcowy w panelu Shopera
+![Warianty po wstawieniu](images/warianty.png)
 
-> Produkt po imporcie i automatycznym utworzeniu wariantów w panelu Shopera.
-
-```md
-![Panel Shopera - gotowe warianty](.images/warianty.png)
-```
-
-#### Screenshot 2 - przykładowy plik wejściowy CSV
-
-**Co pokazać:** krótki, zanonimizowany fragment `war.csv` albo `war_z_id.csv`.
-
-**Podpis:**
-
-> Fragment danych wejściowych używanych do mapowania produktów i budowania wariantów.
-
-```md
-![Przykładowe dane CSV](./docs/images/csv-preview.png)
-```
-
-#### Screenshot 3 - log działania skryptu
-
-**Co pokazać:** terminal z podsumowaniem przetworzonych rekordów.
-
-**Podpis:**
-
-> Uruchomienie skryptu automatyzującego tworzenie / aktualizację wariantów przez API Shopera.
-
-```md
-![Log działania skryptu](./docs/images/script-run.png)
-```
-
-#### Screenshot 4 - architektura procesu
-
-**Co pokazać:** prosty diagram: `towar.csv -> prod_id_get.py -> war_z_id.csv -> upload.py -> Shoper`.
-
-**Podpis:**
-
-> Uproszczony przepływ danych w procesie importu wariantów.
-
-```md
-![Przepływ procesu](./docs/images/workflow.png)
-```
 
 
