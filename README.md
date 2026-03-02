@@ -6,30 +6,17 @@ Automatyzacja procesu przygotowania i wstawiania wariantów produktów do sklepu
 
 ---
 
-## Cel projektu
+## Zakres projektu
 
-Celem projektu było zautomatyzowanie procesu, który w praktyce składa się z 3 kroków:
+Projekt obejmuje:
 
-1. Import produktów bazowych do Shopera z pliku `towar.csv`.
-2. Pobranie identyfikatorów `product_id` nadanych przez Shopera i zmapowanie ich do lokalnych kodów produktów przy użyciu `prod_id_get.py`.
-3. Dodanie / aktualizacja wariantów produktów z pliku `war.csv` przy użyciu `upload.py`.
-
-Dzięki temu można szybko przejść od danych CSV do gotowych wariantów w sklepie, bez ręcznego przepisywania identyfikatorów i bez ręcznej konfiguracji każdego wariantu osobno.
-
----
-
-## Co pokazuje ten projekt
-
-Ten projekt dobrze pokazuje umiejętności praktyczne związane z:
-
-- automatyzacją procesów e-commerce,
-- integracją z REST API,
-- przetwarzaniem i walidacją danych CSV,
-- mapowaniem danych pomiędzy systemami,
-- obsługą błędów i scenariuszy częściowo niekompletnych,
-- tworzeniem skryptów używanych w realnym procesie biznesowym,
-- projektowaniem prostego, powtarzalnego workflow importowego.
-
+- import danych produktowych z plików CSV,
+- mapowanie produktów z wykorzystaniem REST API Shopera,
+- generowanie pliku pośredniego z identyfikatorami produktów,
+- automatyczne tworzenie wariantów na podstawie danych wejściowych,
+- walidację danych wejściowych i obsługę brakujących mapowań,
+- powtarzalny workflow importowy dla procesu e-commerce.
+  
 ---
 
 ## Stack technologiczny
@@ -199,107 +186,15 @@ pip install requests pandas
 
 ---
 
-## Bezpieczeństwo publikacji repozytorium
-
-Do publicznego repozytorium warto wrzucać:
-
-- kod źródłowy,
-- zanonimizowane / przykładowe CSV,
-- instrukcję działania,
-- zrzuty ekranu pokazujące efekt działania.
-
-Nie warto wrzucać:
-
-- prawdziwych `client_id` / `client_secret`,
-- access tokenów,
-- pełnych produkcyjnych plików CSV z realnym asortymentem,
-- danych biznesowych, których nie chcesz upubliczniać.
-
-### Rekomendowane praktyki przed publikacją
-
-- przygotować `sample_towar.csv` i `sample_war.csv` zamiast realnych eksportów,
-- zostawić w kodzie tylko placeholdery konfiguracyjne,
-- ustawić tryb testowy / `DRY_RUN` jako domyślny tam, gdzie to możliwe,
-- dodać plik `.gitignore` dla wyników typu `*_z_id.csv`,
-- upewnić się, że w historii Git nie ma starych commitów z sekretami.
-
-### Uwaga o uruchamianiu z CLI
-
-`prod_id_get.py` przyjmuje sekrety jako argumenty CLI. To działa poprawnie, ale surowe wpisywanie sekretów w terminalu może zostawić ślad w historii shella lub być widoczne w liście procesów systemowych.
-
-Dlatego bezpieczniej uruchamiać skrypt z użyciem zmiennych środowiskowych, np.:
-
-```bash
-export SHOP_URL="https://twoj-sklep.pl"
-export SHOPER_CLIENT_ID="twoj_client_id"
-export SHOPER_CLIENT_SECRET="twoj_client_secret"
-
-python prod_id_get.py \
-  --shop "$SHOP_URL" \
-  --client-id "$SHOPER_CLIENT_ID" \
-  --client-secret "$SHOPER_CLIENT_SECRET" \
-  --variants "war.csv" \
-  --base "towar.csv" \
-  --codes-source base
-```
-
----
-
-## Najważniejsze decyzje projektowe
-
-### Dlaczego osobny etap mapowania `product_id`
-
-Po imporcie CSV do Shopera identyfikatory produktów są nadawane po stronie systemu. Żeby bezpiecznie operować na wariantach przez API, trzeba najpierw powiązać lokalny `product_code` z `product_id` istniejącym już w sklepie.
-
-### Dlaczego warianty są obsługiwane przez API, a nie ręcznie
-
-Ręczne dodawanie wariantów w panelu administracyjnym jest czasochłonne i podatne na błędy. API pozwala:
-
-- zautomatyzować pracę,
-- zachować spójność danych,
-- szybciej przetwarzać większe partie produktów,
-- łatwiej powtarzać proces.
-
-### Dlaczego dane są rozdzielone na `towar.csv` i `war.csv`
-
-To odzwierciedla rzeczywisty workflow:
-
-- osobno istnieją produkty bazowe,
-- osobno istnieją rekordy wariantowe,
-- warianty są zależne od uprzednio zaimportowanych produktów.
-
----
-
-## Potencjalne usprawnienia
-
-W kolejnej iteracji projektu można byłoby dodać:
-
-- obsługę konfiguracji przez `.env`,
-- logger zamiast `print`,
-- testy jednostkowe dla parsowania i mapowania,
-- walidację schematu CSV przed startem procesu,
-- raport końcowy w formacie CSV / JSON,
-- pełny tryb `dry-run` dla całego pipeline'u,
-- konteneryzację lub prosty CLI wrapper spinający oba kroki w jedno polecenie.
-
----
-
-## Materiały do pokazania rekruterowi
-
 ### Miejsce na screenshoty
 
-Warto dodać 2-4 zrzuty ekranu, żeby README nie było wyłącznie techniczne.
 
-#### Screenshot 1 - efekt końcowy w panelu Shopera
-
-**Co pokazać:** widok produktu z poprawnie dodanymi wariantami.
-
-**Najlepszy podpis pod obrazkiem:**
+#### efekt końcowy w panelu Shopera
 
 > Produkt po imporcie i automatycznym utworzeniu wariantów w panelu Shopera.
 
 ```md
-![Panel Shopera - gotowe warianty](./docs/images/shoper-variants-result.png)
+![Panel Shopera - gotowe warianty](.images/warianty.png)
 ```
 
 #### Screenshot 2 - przykładowy plik wejściowy CSV
@@ -338,25 +233,4 @@ Warto dodać 2-4 zrzuty ekranu, żeby README nie było wyłącznie techniczne.
 ![Przepływ procesu](./docs/images/workflow.png)
 ```
 
----
-
-## Dlaczego ten projekt nadaje się do portfolio
-
-To nie jest projekt "demo dla demo", tylko rozwiązanie praktycznego problemu biznesowego. Pokazuje umiejętność przełożenia realnego procesu operacyjnego na czytelny i powtarzalny workflow techniczny.
-
-Z perspektywy rekrutera ten projekt pokazuje jednocześnie:
-
-- pracę z danymi,
-- integrację z zewnętrznym API,
-- automatyzację powtarzalnych zadań,
-- rozumienie ograniczeń systemów zewnętrznych,
-- myślenie o bezpieczeństwie i jakości publikowanego kodu.
-
----
-
-## Status projektu
-
-Projekt działa w realnym scenariuszu importu wariantów do Shopera i został przygotowany jako case study do portfolio.
-
-Wersja publiczna repozytorium powinna zawierać wyłącznie dane przykładowe / zanonimizowane.
 
